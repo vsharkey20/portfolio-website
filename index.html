@@ -203,17 +203,16 @@
     </script>
 
     <script>
-   const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
 const form = document.forms['submit-to-google-sheet'];
+const submitBtn = document.getElementById('submitBtn');
 
 function showToast(message, type = 'success') {
-    // create toast div
     const toast = document.createElement('div');
     toast.className = `toast ${type} show`;
     toast.textContent = message;
     document.body.appendChild(toast);
 
-    // remove after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show'); // fade out
         setTimeout(() => toast.remove(), 500); // remove from DOM
@@ -222,6 +221,9 @@ function showToast(message, type = 'success') {
 
 form.addEventListener('submit', e => {
     e.preventDefault();
+
+    // Disable submit button immediately
+    submitBtn.disabled = true;
 
     fetch(scriptURL, {
         method: 'POST',
@@ -234,6 +236,12 @@ form.addEventListener('submit', e => {
     .catch(error => {
         console.error('Error!', error.message);
         showToast("Something went wrong!", "error");
+    })
+    .finally(() => {
+        // Re-enable button after 5 seconds
+        setTimeout(() => {
+            submitBtn.disabled = false;
+        }, 5000);
     });
 });
 
