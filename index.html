@@ -203,29 +203,43 @@
     </script>
 
     <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
-    const form = document.forms['submit-to-google-sheet'];
-    const msg = document.getElementById("msg");
+const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
+const form = document.forms['submit-to-google-sheet'];
+const msg = document.getElementById("msg");
+const submitBtn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
+form.addEventListener('submit', e => {
+    e.preventDefault();
 
-        fetch(scriptURL, {
-            method: 'POST',
-            body: new FormData(form)
-        })
-        .then(response => {
+    // Step 1: Show "Sending..." and disable button
+    msg.innerHTML = "Sending...";
+    submitBtn.disabled = true;
+
+    // Step 2: Send the form data
+    fetch(scriptURL, {
+        method: 'POST',
+        body: new FormData(form)
+    })
+    .then(response => {
+        // Step 3: Wait 3 seconds, then show success
+        setTimeout(() => {
             msg.innerHTML = "Message Sent Successfully";
+            submitBtn.disabled = false;
+            form.reset();
+
+            // Optional: clear the success message after another 3 seconds
             setTimeout(() => {
                 msg.innerHTML = "";
-            }, 5000);
-            form.reset();
-        })
-        .catch(error => {
-            console.error('Error!', error.message);
-            msg.innerHTML = "Something went wrong!";
-        });
+            }, 3000);
+
+        }, 3000); // 3-second delay
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        msg.innerHTML = "Something went wrong!";
+        submitBtn.disabled = false;
     });
+});
 </script>
 
 
