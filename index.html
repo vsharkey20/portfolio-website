@@ -203,9 +203,22 @@
     </script>
 
     <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
+   const scriptURL = 'https://script.google.com/macros/s/AKfycbypw4mXtjs5XssRn3YyWuBQtibPiOJn9cy-FSlVJMLnsfgW-i7Up8Wul6y304Qen0qkeg/exec';
 const form = document.forms['submit-to-google-sheet'];
-const msg = document.getElementById("msg");
+
+function showToast(message, type = 'success') {
+    // create toast div
+    const toast = document.createElement('div');
+    toast.className = `toast ${type} show`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show'); // fade out
+        setTimeout(() => toast.remove(), 500); // remove from DOM
+    }, 3000);
+}
 
 form.addEventListener('submit', e => {
     e.preventDefault();
@@ -215,30 +228,15 @@ form.addEventListener('submit', e => {
         body: new FormData(form)
     })
     .then(response => {
-        // Show success message
-        msg.textContent = "Message Sent Successfully";
-        msg.className = "msg success"; // add success styling
-        msg.style.opacity = 1;
-
-        // Fade out after 5 seconds
-        setTimeout(() => {
-            msg.style.opacity = 0;
-        }, 5000);
-
+        showToast("Message Sent Successfully", "success");
         form.reset();
     })
     .catch(error => {
         console.error('Error!', error.message);
-        // Show error message
-        msg.textContent = "Something went wrong!";
-        msg.className = "msg error"; // add error styling
-        msg.style.opacity = 1;
-
-        setTimeout(() => {
-            msg.style.opacity = 0;
-        }, 5000);
+        showToast("Something went wrong!", "error");
     });
 });
+
 
 </script>
 
