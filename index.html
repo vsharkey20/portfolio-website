@@ -215,32 +215,35 @@ form.addEventListener('submit', e => {
     msg.innerHTML = "Sending...";
     submitBtn.disabled = true;
 
-    // Step 2: Send the form data
-    fetch(scriptURL, {
-        method: 'POST',
-        body: new FormData(form)
-    })
-    .then(response => {
-        // Step 3: Wait 3 seconds, then show success
-        setTimeout(() => {
-            msg.innerHTML = "Message Sent Successfully";
-            submitBtn.disabled = false;
-            form.reset();
-
-            // Optional: clear the success message after another 3 seconds
+    // Allow the browser to render "Sending..." before fetch starts
+    setTimeout(() => {
+        fetch(scriptURL, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => {
+            // Wait 3 seconds before showing success
             setTimeout(() => {
-                msg.innerHTML = "";
-            }, 3000);
+                msg.innerHTML = "Message Sent Successfully";
+                submitBtn.disabled = false;
+                form.reset();
 
-        }, 3000); // 3-second delay
-    })
-    .catch(error => {
-        console.error('Error!', error.message);
-        msg.innerHTML = "Something went wrong!";
-        submitBtn.disabled = false;
-    });
+                // Clear message after another 3 seconds
+                setTimeout(() => {
+                    msg.innerHTML = "";
+                }, 3000);
+
+            }, 3000); // 3-second delay for UX
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            msg.innerHTML = "Something went wrong!";
+            submitBtn.disabled = false;
+        });
+    }, 0); // tiny delay so "Sending..." appears
 });
 </script>
+
 
 
 
